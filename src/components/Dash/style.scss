@@ -1,0 +1,14 @@
+.dash {
+  height: 100vh;
+  overflow: auto;
+
+  display: grid;
+  grid-template-columns: 300px 1fr;
+
+  .left-panel-wrapper {
+    background-color: var(--color-background-2);
+  }
+  .main-section-wrapper {
+    background-color: var(--color-background-4);
+  }
+}
