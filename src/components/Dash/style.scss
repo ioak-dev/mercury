@@ -3,11 +3,24 @@
   overflow: auto;
 
   display: grid;
-  grid-template-columns: 300px 1fr;
+  grid-template-columns: auto 1fr;
 
   .left-panel-wrapper {
     background-color: var(--color-background-3);
     box-shadow: var(--bs-md);
+    transition-property: width;
+    transition-duration: 0.3s;
+    transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+    overflow: hidden;
+    &.show {
+      width: 300px;
+      @media (max-width: 767px) {
+        width: 100vw;
+      }
+    }
+    &.hide {
+      width: 0px;
+    }
   }
   .main-section-wrapper {
     background-color: var(--color-background-2);

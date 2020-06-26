@@ -4,7 +4,7 @@ import { connect, useSelector, useDispatch } from 'react-redux';
 import { useQuery, useLazyQuery } from '@apollo/react-hooks';
 import './style.scss';
 import OakButton from '../../oakui/OakButton';
-import { newId } from '../../events/MessageService';
+import { newId, receiveMessage } from '../../events/MessageService';
 import LeftPanel from './LeftPanel';
 import MainSection from './MainSection';
 import { LIST_ALL_USERS } from '../Types/schema';
@@ -23,6 +23,15 @@ interface Props {
 const queryString = require('query-string');
 
 const Dash = (props: Props) => {
+  const [sidebarExpanded, setSidebarExpanded] = useState(true);
+
+  useEffect(() => {
+    receiveMessage().subscribe(message => {
+      if (message.name === 'expand-chat-sidebar') {
+        setSidebarExpanded(message.signal);
+      }
+    });
+  }, []);
   const authorization = useSelector(state => state.authorization);
   const [loadUsers, { loading, error, data, called }] = useLazyQuery(
     LIST_ALL_USERS
@@ -44,7 +53,9 @@ const Dash = (props: Props) => {
 
   return (
     <div className="dash">
-      <div className="left-panel-wrapper">
+      <div
+        className={`left-panel-wrapper ${sidebarExpanded ? 'show' : 'hide'}`}
+      >
         <LeftPanel
           space={props.space}
           history={props.history}

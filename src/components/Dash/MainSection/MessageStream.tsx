@@ -121,7 +121,6 @@ const MessageStream = (props: Props) => {
         )}
       </div>
       {loading && <OakSpinner />}
-      {loading && <>sdfdsfds</>}
     </>
   );
 };

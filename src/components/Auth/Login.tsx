@@ -17,7 +17,7 @@ const Login = (props: Props) => {
     if (props.location.search) {
       const query = queryString.parse(props.location.search);
       props.cookies.set(`mercury_${query.space}`, query.authKey);
-      props.history.push(`/${query.space}/home`);
+      props.history.push(`/${query.space}/dash`);
     }
   }, []);
 

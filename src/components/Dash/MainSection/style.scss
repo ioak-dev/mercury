@@ -12,11 +12,15 @@
 }
 
 .main-section-header {
+  user-select: none;
   display: grid;
   align-items: center;
   grid-auto-flow: column;
   justify-content: flex-start;
   column-gap: 10px;
+  .chat-sidebar-switch {
+    cursor: pointer;
+  }
 }
 
 .view-message {
