@@ -79,7 +79,7 @@ const Navigation = (props: Props) => {
     message = 'You have been logged out'
   ) => {
     props.removeAuth();
-    props.cookies.remove(`mirror_${space}`);
+    props.cookies.remove(`mercury_${space}`);
     sendMessage('notification', true, {
       type,
       message,

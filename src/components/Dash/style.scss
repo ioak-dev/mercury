@@ -6,9 +6,10 @@
   grid-template-columns: 300px 1fr;
 
   .left-panel-wrapper {
-    background-color: var(--color-background-2);
+    background-color: var(--color-background-3);
+    box-shadow: var(--bs-md);
   }
   .main-section-wrapper {
-    background-color: var(--color-background-4);
+    background-color: var(--color-background-2);
   }
 }

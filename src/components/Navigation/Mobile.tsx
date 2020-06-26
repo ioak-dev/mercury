@@ -2,14 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import './style.scss';
-import mirrorWhite from '../../images/mirror_white.svg';
 import mirrorWhiteSmall from '../../images/mirror_white_small.svg';
-import mirrorBlack from '../../images/mirror_black.svg';
 import Links from './Links';
 import { Authorization, Profile } from '../Types/GeneralTypes';
 import SearchBar from '../../oakui/SearchBar';
 import { receiveMessage } from '../../events/MessageService';
 import OakButton from '../../oakui/OakButton';
+import Logo from '../Logo/Logo';
 // import SearchBar from '../Ux/SearchBar';
 
 interface Props {
@@ -62,26 +61,7 @@ const Mobile = (props: Props) => {
         }
       >
         <div className="left">
-          {!data.showSearchBar &&
-            !props.transparent &&
-            props.profile.theme === 'theme_light' && (
-              <img className="logo" src={mirrorBlack} alt="Mirror logo" />
-            )}
-          {!data.showSearchBar &&
-            (props.transparent || props.profile.theme === 'theme_dark') && (
-              <img className="logo" src={mirrorWhite} alt="Mirror logo" />
-            )}
-          {data.showSearchBar &&
-            !props.transparent &&
-            props.profile.theme === 'theme_light' && (
-              <img className="logo" src={mirrorWhiteSmall} alt="Mirror logo" />
-            )}
-          {data.showSearchBar &&
-            (props.transparent || props.profile.theme === 'theme_dark') && (
-              <img className="logo" src={mirrorWhiteSmall} alt="Mirror logo" />
-            )}
-          {data.showSearchBar && <SearchBar alt />}
-          {/* links */}
+          <Logo />
         </div>
         <div className="right">
           {/* <div className="settings-icon" onClick={props.toggleSettings}><i className="material-icons">settings</i></div> */}

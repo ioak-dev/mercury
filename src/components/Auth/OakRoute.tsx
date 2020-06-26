@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { Socket, Channel } from 'phoenix';
 import axios from 'axios';
-import gql from 'graphql-tag';
 import { connect, useSelector, useDispatch } from 'react-redux';
 import { getAuth, addAuth } from '../../actions/AuthActions';
 import { Authorization } from '../Types/GeneralTypes';
@@ -21,25 +20,13 @@ interface Props {
   channel?: Channel;
 }
 
-const GET_SESSION = gql`
-  query Session($key: ID!) {
-    session(key: $key) {
-      id
-      firstName
-      lastName
-      email
-      token
-    }
-  }
-`;
-
 const OakRoute = (props: Props) => {
-  const authorization = useSelector((state) => state.authorization);
-  const profile = useSelector((state) => state.profile);
+  const authorization = useSelector(state => state.authorization);
+  const profile = useSelector(state => state.profile);
   const dispatch = useDispatch();
 
   const middlewares = () => {
-    props.middleware?.forEach((middlewareName) => {
+    props.middleware?.forEach(middlewareName => {
       if (!runMidleware(middlewareName)) {
         return false;
       }
@@ -47,7 +34,7 @@ const OakRoute = (props: Props) => {
     return true;
   };
 
-  const runMidleware = (middlewareName) => {
+  const runMidleware = middlewareName => {
     sendMessage('spaceChange', true, '');
     switch (middlewareName) {
       case 'readAuthentication':
@@ -79,7 +66,7 @@ const OakRoute = (props: Props) => {
     if (authKey) {
       try {
         httpGet(`${baseAuthUrl}/session/${authKey}`, null)
-          .then((sessionResponse) => {
+          .then(sessionResponse => {
             console.log('success');
             if (sessionResponse.status === 200) {
               dispatch(
@@ -92,6 +79,7 @@ const OakRoute = (props: Props) => {
                   email: sessionResponse.data.email,
                   type: sessionResponse.data.type,
                   userId: sessionResponse.data.user_id,
+                  id: sessionResponse.data.id,
                 })
               );
             }
@@ -136,7 +124,7 @@ const OakRoute = (props: Props) => {
     return false;
   };
 
-  const redirectToLogin = (spaceId) => {
+  const redirectToLogin = spaceId => {
     window.location.href = `${process.env.REACT_APP_ONEAUTH_URL}/#/space/${spaceId}/login?type=signin&appId=${process.env.REACT_APP_ONEAUTH_APP_ID}`;
   };
 

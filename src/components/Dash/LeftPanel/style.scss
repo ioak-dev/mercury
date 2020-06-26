@@ -1,2 +1,38 @@
 .left-panel {
+  display: grid;
+  row-gap: 10px;
+  padding: 10px 0;
+  .top-header {
+    padding: 0 10px;
+    display: grid;
+    grid-template-columns: auto auto;
+    justify-content: space-between;
+  }
+}
+
+.people-list {
+  .people-list-title {
+    padding: 16px 10px;
+  }
+}
+
+.channel-list {
+  .channel-list-title {
+    padding: 16px 10px;
+  }
+}
+
+.people-link {
+  user-select: none;
+  padding: 6px 10px;
+  cursor: pointer;
+  color: var(--color-foreground-4);
+  &:hover {
+    background-color: var(--color-background-4);
+  }
+
+  &.active {
+    background-color: var(--color-primary-1);
+    color: var(--color-foreground-1);
+  }
 }

@@ -1,4 +1,11 @@
 import React, { useEffect, useState } from 'react';
+
+import { InMemoryCache } from 'apollo-boost';
+import ApolloClient from 'apollo-client';
+import { createHttpLink } from 'apollo-link-http';
+import { setContext } from 'apollo-link-context';
+import { ApolloProvider } from '@apollo/react-hooks';
+
 import { Socket, Channel } from 'phoenix';
 import { useSelector, connect } from 'react-redux';
 import { Route } from 'react-router-dom';
@@ -64,22 +71,48 @@ const Content = (props: Props) => {
   const authorization = useSelector(state => state.authorization);
   const [socket, setSocket] = useState<Socket>();
   const [channel, setChannel] = useState<Channel>();
+  const [showNav, setShowNav] = useState(false);
+  const [space, setSpace] = useState('');
+
+  const httpLink = createHttpLink({
+    uri: process.env.REACT_APP_GRAPHQL_URL,
+  });
+
+  const authLink = setContext((_, { headers }) => {
+    return {
+      headers: {
+        ...headers,
+        authorization: `${space} ${authorization?.token}` || '',
+      },
+    };
+  });
+
+  const client = new ApolloClient({
+    link: authLink.concat(httpLink),
+    cache: new InMemoryCache(),
+  });
 
   useEffect(() => {
     props.getProfile();
+    receiveMessage().subscribe(message => {
+      if (message.name === 'show-navbar-element') {
+        setShowNav(message.signal);
+      } else if (message.name === 'spaceChange') {
+        setSpace(message.data);
+      }
+    });
   }, []);
 
   useEffect(() => {
-    if (authorization.isAuth && !socket) {
-      console.log(authorization);
+    if (authorization.isAuth && !socket && space) {
       setSocket(
         new Socket(
           `${process.env.REACT_APP_WS_URL}/socket/websocket?auth_token=${authorization.token}`,
-          { params: { auth_token: authorization.token } }
+          { params: { auth_token: authorization.token, space } }
         )
       );
     }
-  }, [authorization]);
+  }, [authorization, space]);
 
   useEffect(() => {
     if (socket) {
@@ -89,7 +122,7 @@ const Content = (props: Props) => {
       );
       socket.onClose(() => console.log('the connection dropped'));
 
-      const userChannel = socket.channel(`user:${authorization.userId}`);
+      const userChannel = socket.channel(`user:${authorization.id}`);
 
       userChannel
         .join()
@@ -104,94 +137,96 @@ const Content = (props: Props) => {
   }, [socket]);
 
   return (
-    <div
-      className={`App ${props.profile.theme} ${props.profile.textSize} ${props.profile.themeColor}`}
-    >
-      <HashRouter>
-        <div className="body">
-          <div className="body-content">
-            <Notification />
-            <MuiThemeProvider theme={themes.themecolor1}>
-              {/* <Navigation {...props} /> */}
-              <Route
-                path="/login"
-                render={propsLocal => (
-                  <OakRoute {...propsLocal} {...props} component={Login} />
-                )}
-              />
-              <Route
-                path="/:tenant/unauthorized"
-                render={propsLocal => (
-                  <OakRoute
-                    {...propsLocal}
-                    {...props}
-                    component={Unauthorized}
-                    middleware={['isAuthenticated']}
-                  />
-                )}
-              />
-              <Route
-                path="/"
-                exact
-                render={propsLocal => (
-                  <OakRoute {...propsLocal} {...props} component={Landing} />
-                )}
-              />
-              <Route
-                path="/home"
-                exact
-                render={propsLocal => (
-                  <OakRoute {...propsLocal} {...props} component={Landing} />
-                )}
-              />
-              <Route
-                path="/tenant"
-                exact
-                render={propsLocal => (
-                  <OakRoute {...propsLocal} {...props} component={Tenant} />
-                )}
-              />
-              <Route
-                path="/:tenant/home"
-                render={propsLocal => (
-                  <OakRoute
-                    {...propsLocal}
-                    {...props}
-                    component={Home}
-                    middleware={['readAuthentication']}
-                  />
-                )}
-              />
-              <Route
-                path="/:tenant/dash"
-                render={propsLocal => (
-                  <OakRoute
-                    {...propsLocal}
-                    {...props}
-                    component={Dash}
-                    middleware={['readAuthentication']}
-                    socket={socket}
-                    channel={channel}
-                  />
-                )}
-              />
-              <Route
-                path="/:tenant"
-                exact
-                render={propsLocal => (
-                  <OakRoute
-                    {...propsLocal}
-                    {...props}
-                    component={Home}
-                    middleware={['readAuthentication']}
-                  />
-                )}
-              />
-            </MuiThemeProvider>
+    <ApolloProvider client={client}>
+      <div
+        className={`App ${props.profile.theme} ${props.profile.textSize} ${props.profile.themeColor}`}
+      >
+        <HashRouter>
+          <div className="body">
+            <div className="body-content">
+              <Notification />
+              <MuiThemeProvider theme={themes.themecolor1}>
+                {/* {showNav && <Navigation {...props} />} */}
+                <Route
+                  path="/login"
+                  render={propsLocal => (
+                    <OakRoute {...propsLocal} {...props} component={Login} />
+                  )}
+                />
+                <Route
+                  path="/:tenant/unauthorized"
+                  render={propsLocal => (
+                    <OakRoute
+                      {...propsLocal}
+                      {...props}
+                      component={Unauthorized}
+                      middleware={['isAuthenticated']}
+                    />
+                  )}
+                />
+                <Route
+                  path="/"
+                  exact
+                  render={propsLocal => (
+                    <OakRoute {...propsLocal} {...props} component={Landing} />
+                  )}
+                />
+                <Route
+                  path="/home"
+                  exact
+                  render={propsLocal => (
+                    <OakRoute {...propsLocal} {...props} component={Landing} />
+                  )}
+                />
+                <Route
+                  path="/tenant"
+                  exact
+                  render={propsLocal => (
+                    <OakRoute {...propsLocal} {...props} component={Tenant} />
+                  )}
+                />
+                <Route
+                  path="/:tenant/home"
+                  render={propsLocal => (
+                    <OakRoute
+                      {...propsLocal}
+                      {...props}
+                      component={Home}
+                      middleware={['readAuthentication']}
+                    />
+                  )}
+                />
+                <Route
+                  path="/:tenant/dash"
+                  render={propsLocal => (
+                    <OakRoute
+                      {...propsLocal}
+                      {...props}
+                      component={Dash}
+                      middleware={['readAuthentication']}
+                      socket={socket}
+                      channel={channel}
+                    />
+                  )}
+                />
+                <Route
+                  path="/:tenant"
+                  exact
+                  render={propsLocal => (
+                    <OakRoute
+                      {...propsLocal}
+                      {...props}
+                      component={Home}
+                      middleware={['readAuthentication']}
+                    />
+                  )}
+                />
+              </MuiThemeProvider>
+            </div>
           </div>
-        </div>
-      </HashRouter>
-    </div>
+        </HashRouter>
+      </div>
+    </ApolloProvider>
   );
 };
 

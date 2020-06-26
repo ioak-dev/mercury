@@ -14,7 +14,7 @@ const LoginSection = (props: Props) => {
     window.location.href = `${process.env.REACT_APP_ONEAUTH_URL}/#/space/${props.space}/login?appId=${process.env.REACT_APP_ONEAUTH_APP_ID}`;
   };
   return (
-    <div className="action">
+    <>
       {authorization.isAuth && (
         <OakButton
           theme="primary"
@@ -36,7 +36,7 @@ const LoginSection = (props: Props) => {
           <i className="material-icons">person</i>Login
         </OakButton>
       )}
-    </div>
+    </>
   );
 };
 

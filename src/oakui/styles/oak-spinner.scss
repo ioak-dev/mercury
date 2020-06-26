@@ -53,7 +53,7 @@
 
 @keyframes loading {
   0% {
-    transform: translateX(-40vw);
+    transform: translateX(-30vw);
     opacity: 0;
   }
   35%,
@@ -62,7 +62,7 @@
     opacity: 1;
   }
   100% {
-    transform: translateX(+40vw);
+    transform: translateX(+30vw);
     opacity: 0;
   }
 }

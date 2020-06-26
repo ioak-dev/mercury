@@ -2,14 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import './style.scss';
-import mirrorWhite from '../../images/mirror_white.svg';
-import mirrorBlack from '../../images/mirror_black.svg';
 import Links from './Links';
 import { Authorization, Profile } from '../Types/GeneralTypes';
 // import SearchBar from '../Ux/SearchBar';
 import { receiveMessage } from '../../events/MessageService';
 import SearchBar from '../../oakui/SearchBar';
 import OakButton from '../../oakui/OakButton';
+import Logo from '../Logo/Logo';
 
 interface Props {
   sendEvent: Function;
@@ -53,12 +52,7 @@ const Desktop = (props: Props) => {
       }
     >
       <div className="left">
-        {!props.transparent && props.profile.theme === 'theme_light' && (
-          <img className="logo" src={mirrorBlack} alt="Mirror logo" />
-        )}
-        {(props.transparent || props.profile.theme === 'theme_dark') && (
-          <img className="logo" src={mirrorWhite} alt="Mirror logo" />
-        )}
+        <Logo />
         <Links authorization={authorization} space={props.space} />
         {showSearchBar && <SearchBar alt />}
       </div>

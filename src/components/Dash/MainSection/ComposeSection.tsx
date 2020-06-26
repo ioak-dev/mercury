@@ -8,6 +8,7 @@ import OakEditor from '../../../oakui/OakEditor';
 interface Props {
   socket: Socket;
   channel: Channel;
+  params: any;
 }
 
 const ComposeSection = (props: Props) => {
@@ -30,7 +31,11 @@ const ComposeSection = (props: Props) => {
   };
 
   const sendMessage = () => {
-    props.channel.push('new_message', { body: state.message }, 10000);
+    props.channel.push(
+      'new_message',
+      { receiver: props.params?.id, content: state.message },
+      10000
+    );
     setState({ message: '' });
   };
 
@@ -40,25 +45,28 @@ const ComposeSection = (props: Props) => {
 
   return (
     <div className="compose-section">
-      <form method="GET" onSubmit={sendMessage} noValidate>
-        <OakEditor
-          data={state}
-          id="message"
-          handleChange={handleChange}
-          handleEnter={sendMessage}
-          bottom
-          // center
-          size
-          color
-          align
-        />
-        {/* <OakEditor
+      {props.socket && (
+        <form method="GET" onSubmit={sendMessage} noValidate>
+          <OakEditor
+            data={state}
+            id="message"
+            handleChange={handleChange}
+            handleEnter={sendMessage}
+            bottom
+            // center
+            size
+            color
+            align
+          />
+          {/* <OakEditor
           data={state}
           id="message"
           handleChange={handleChange}
           handleEnter={sendMessage}
         /> */}
-      </form>
+        </form>
+      )}
+      {!props.socket && <div>Initializing...</div>}
     </div>
   );
 };

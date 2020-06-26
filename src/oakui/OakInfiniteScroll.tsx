@@ -6,6 +6,7 @@ interface Props {
   selector?: string;
   children?: any;
   handleChange: any;
+  reverseOrder?: boolean;
 }
 
 const OakInfiniteScroll = (props: Props) => {
@@ -14,11 +15,17 @@ const OakInfiniteScroll = (props: Props) => {
   useEffect(() => {
     document
       .querySelector(props.selector || '.oak-infinite-scroll')
-      ?.addEventListener('scroll', handleScroll);
+      ?.addEventListener(
+        'scroll',
+        props.reverseOrder ? handleReverseScroll : handleScroll
+      );
     return () =>
       document
         .querySelector(props.selector || '.oak-infinite-scroll')
-        ?.addEventListener('scroll', handleScroll);
+        ?.addEventListener(
+          'scroll',
+          props.reverseOrder ? handleReverseScroll : handleScroll
+        );
   }, []);
 
   useEffect(() => {
@@ -42,6 +49,24 @@ const OakInfiniteScroll = (props: Props) => {
     ) {
       // console.log('Fetch more list items!');
       setIsFetching(true);
+      // props.handleChange();
+    }
+  }
+
+  function handleReverseScroll() {
+    if (
+      (document.querySelector(props.selector || '.oak-infinite-scroll')
+        ?.scrollHeight || 0) >=
+        (document.querySelector(props.selector || '.oak-infinite-scroll')
+          ?.clientHeight || 0) &&
+      (document.querySelector(props.selector || '.oak-infinite-scroll')
+        ?.scrollTop || 0) === 0
+    ) {
+      // console.log('Fetch more list items!');
+      setIsFetching(true);
+      document
+        .querySelector(props.selector || '.oak-infinite-scroll')
+        ?.scrollTo(0, 10);
       // props.handleChange();
     }
   }

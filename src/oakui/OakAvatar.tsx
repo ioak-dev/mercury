@@ -6,10 +6,17 @@ interface Props {
   size?: string;
   firstName?: string;
   lastName?: string;
+  variant?: 'outline' | 'dotted';
 }
 const OakAvatar = (props: Props) => {
+  const getStyle = () => {
+    const style = props.variant ? props.variant : '';
+
+    return style;
+  };
+
   return (
-    <div className="oak-avatar">
+    <div className={`oak-avatar ${getStyle()}`}>
       {/* <AvatarImage
       v-if="user.avatar"
       v-bind:reference="user.avatar"

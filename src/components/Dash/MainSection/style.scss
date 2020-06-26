@@ -1,35 +1,83 @@
+.header-wrapper {
+  height: 50px;
+  box-shadow: var(--bs-md);
+  display: grid;
+  align-items: center;
+  padding: 0 10px;
+}
 .main-section {
   display: grid;
   grid-template-rows: auto 1fr auto;
   height: 100%;
 }
 
+.main-section-header {
+  display: grid;
+  align-items: center;
+  grid-auto-flow: column;
+  justify-content: flex-start;
+  column-gap: 10px;
+}
+
+.view-message {
+  display: grid;
+  grid-auto-flow: column;
+  justify-content: flex-start;
+  column-gap: 6px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  .column-right {
+    display: grid;
+    grid-auto-flow: row;
+    .sender-meta {
+      display: grid;
+      grid-auto-flow: column;
+      column-gap: 10px;
+      align-items: center;
+      justify-content: flex-start;
+      .sender-name {
+        color: var(--color-foreground-3);
+        font-weight: bold;
+      }
+      .sent-time {
+        color: var(--color-foreground-4);
+        font-weight: lighter;
+      }
+    }
+  }
+  &:hover {
+    background-color: var(--color-background-3);
+  }
+}
+
 .message-stream-container {
-  // header height - 50px; compose box - 80px; compose toolbar - 20px, compose section margin - 10px*2
-  height: calc(100vh - 50px - 80px - 20px - 10px - 10px - 40px);
+  // header height - 50px; compose box - 80px; compose toolbar - 20px, compose section margin - 10px*2 padding-top-self 20px
+  height: calc(100vh - 50px - 80px - 20px - 10px - 10px - 40px - 20px);
   width: 100%;
   overflow: auto;
   word-break: break-word;
-  // margin: 0 10px;
+  display: grid;
+  align-items: flex-end;
+  padding-top: 20px;
 
   .message-stream {
+    display: grid;
+    grid-auto-flow: row;
+    row-gap: 10px;
     margin: 0 20px;
   }
 }
-.header-wrapper {
-  height: 50px;
-}
-
 .compose-section {
-  margin: 10px 20px;
+  margin: 0 20px;
   // Quill editor customization
   .oak-editor {
     .ql-container {
       height: 80px !important;
+      // height: auto !important;
       overflow: auto;
 
       border-bottom: 4px solid transparent !important;
-      background-color: var(--color-background-5);
+      background-color: var(--color-background-4);
       // border-radius: 6px;
       box-shadow: var(--bs-sm) !important;
       margin: 4px 0;
@@ -47,6 +95,7 @@
       .ql-editor {
         min-height: 0px !important;
         padding: 10px 10px !important;
+        word-break: break-all;
       }
     }
 
@@ -54,5 +103,13 @@
       bottom: 100% !important;
       top: auto !important;
     }
+  }
+}
+
+.oak-editor,
+.oak-viewer {
+  img {
+    max-width: 50vw !important;
+    height: auto !important;
   }
 }
